@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="description"
-        content="Learning Neural Volumetric Pose Features for Camera Localization">
-  <meta name="keywords" content="Absolute pose regression, Pose feature, NeRF">
+        content="NoPe-NeRF++: Local-to-Global Optimization of NeRF with No Pose Prior">
+  <meta name="keywords" content="NeRF, Pose estimation">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Learning Neural Volumetric Pose Features for Camera Localization</title>
+  <title>NoPe-NeRF++: Local-to-Global Optimization of NeRF with No Pose Prior</title>
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
@@ -49,18 +49,19 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <h1 class="title is-2 publication-title">Learning Neural Volumetric Pose Features<br> for Camera Localization</h1>
+            <h1 class="title is-2 publication-title">NoPe-NeRF++: Local-to-Global Optimization of NeRF<br> with No Pose Prior</h1>
           <div class="is-size-3 publication-authors">
-            <span class="author-block">ECCV 2024</span>
+            <span class="author-block">Eurographics 2025</span>
           </div>
           <div class="is-size-5 publication-authors">
-            <span class="author-block">Jingyu Lin</a><sup>1*&dagger;</sup>,&nbsp&nbsp&nbsp</span>
-            <span class="author-block"><a href="https://gujiaqivadin.github.io/">Jiaqi Gu</a><sup>2&dagger;</sup>,&nbsp&nbsp&nbsp</span>
-            <span class="author-block"><a href="https://scholar.google.com.eg/citations?user=pdx6Lg8AAAAJ">Bojian Wu</a><sup>3</sup>,&nbsp&nbsp&nbsp</span>
-            <span class="author-block"><a href="https://lubinfan.github.io/">Lubin Fan</a><sup>2&ddagger;</sup>,&nbsp&nbsp&nbsp</span>
-            <span class="author-block">Renjie Chen<sup>1&ddagger;</sup>,&nbsp&nbsp&nbsp</span>
-            <span class="author-block">Ligang Liu<sup>1</sup>,&nbsp&nbsp&nbsp</span>
-            <span class="author-block"><a href="https://scholar.google.com.eg/citations?user=T9AzhwcAAAAJ">Jieping Ye</a><sup>2</sup>&nbsp&nbsp&nbsp</span>
+              <span class="author-block">Dongbo Shi</a><sup>1*&dagger;</sup>,&nbsp&nbsp&nbsp</span>
+              <span class="author-block">Shen Cao</a><sup>2&dagger;</sup>,&nbsp&nbsp&nbsp</span>
+              <span class="author-block">Jinhui Guo</a><sup>2&dagger;</sup>,&nbsp&nbsp&nbsp</span>
+              <span class="author-block"><a href="https://scholar.google.com.eg/citations?user=pdx6Lg8AAAAJ">Bojian Wu</a><sup>3</sup>,&nbsp&nbsp&nbsp</span>
+              <span class="author-block"><a href="https://lubinfan.github.io/">Lubin Fan</a><sup>2&ddagger;</sup>,&nbsp&nbsp&nbsp</span>
+              <span class="author-block"><a href="http://staff.ustc.edu.cn/~renjiec/">Renjie Chen</a><sup>1&ddagger;</sup>,&nbsp&nbsp&nbsp</span>
+              <span class="author-block"><a href="http://staff.ustc.edu.cn/~lgliu/">Ligang Liu</a><sup>1</sup>,&nbsp&nbsp&nbsp</span>
+              <span class="author-block"><a href="https://scholar.google.com.eg/citations?user=T9AzhwcAAAAJ">Jieping Ye</a><sup>2</sup>&nbsp&nbsp&nbsp</span>
           </div>
 
           <div class="is-size-5 publication-authors">
@@ -70,7 +71,7 @@
           </div>
 
           <div class="is-size-6 publication-authors">
-            <span class="author-block"><sup>*</sup>This work was done when Jingyu Lin was an intern at Alibaba Cloud.</span>
+            <span class="author-block"><sup>*</sup>This work was done when author was an intern at Alibaba Cloud.</span>
           </div>
 
           <div class="is-size-6 publication-authors">
@@ -161,9 +162,13 @@
       <div class="column is-four-fifths">
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
-          <p>
-            We introduce a novel neural volumetric pose feature, termed PoseMap, designed to enhance camera localization by encapsulating the information between images and the associated camera poses. Our framework leverages an Absolute Pose Regression (APR) architecture, together with an augmented NeRF module. This integration not only facilitates the generation of novel views to enrich the training dataset but also enables the learning of effective pose features. Additionally, we extend our architecture for self-supervised online alignment, allowing our method to be used and fine-tuned for unlabelled images within a unified framework. Experiments demonstrate that our method achieves 14.28% and 20.51% performance gain on average in indoor and outdoor benchmark scenes, outperforming existing APR methods with state-of-the-art accuracy.
-          </p>
+            <p>
+                We introduce NoPe-NeRF++, a novel local-to-global optimization algorithm for training Neural Radiance Fields (NeRF) without requiring pose priors.
+                Specifically, compared to NoPe-NeRF, which solely explores the local relationships of images, however, fails to recover the accurate camera poses in the complex scenarios.
+                To overcome the challenges, our approach begins with a relative pose initialization with explicit feature matching, followed by a local joint optimization to enhance the pose estimation for training a more robust NeRF representation.
+                This method significantly improves the quality of initial poses.
+                Additionally, we introduce global optimization phase that incorporates geometric consistency constraints through bundle adjustment, which integrates feature trajectories to further refine poses and collectively boost the quality of NeRF. Notably, our method is the first work that seamlessly combines the local and global cues with NeRF, and outperforms state-of-the-art methods in both pose estimation accuracy and novel view synthesis. Extensive evaluations on benchmark datasets demonstrate our superior performance and robustness, even in challenging scenes, thus validating our design choices.
+            </p>
         </div>
       </div>
     </div>
@@ -193,24 +198,24 @@
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Method</h2>
-        <img src="static/images/fig1.png" />
+        <a name="fig-pipline"> <img src="static/images/fig1.png" /> </a>
         <figcaption>Figure: Pipeline.</figcaption>
         <div class="content has-text-justified">
-          <p>
-            Given a set of images and the associated camera poses \( \{(I, p)\} \), our goal is to train a neural network that takes a query image \( I^* \) as input and directly outputs its corresponding camera pose \( p^* \).
-            Here the camera pose is represented as a \( 3\times 4 \) matrix which is a combination of translation and rotation with regard to a reference coordinate system.
-            The whole pipeline is demonstrated in the figure</a>.
-            It contains two main entangled modules: APRNet and NeRF-P.
-            Concretely, with an input image \( I \), APRNet leverages separate branches to extract image features \( \mathcal{F}_{image}(I) \) and estimates the camera pose \( \hat{p} \).
-            With the given ground-truth pose, NeRF-P subsequently renders a synthetic image \( \hat{I} \), which will be forwarded to the feature extraction branch of APRNet and obtain \( \mathcal{F}_{image}(\hat{I}) \).
-        </p>
-        <p>
-            On the other hand, we propose a novel implicit pose features \( \mathcal{F}_{pose}(\hat{p}) \) called <i>PoseMap</i>, by enhancing the volumetric rendering module with an extra pose feature branch on original NeRF architecture, which will be further used for pose prediction.
-            The key idea of this design choice is that NeRF itself is an abstraction of visual and geometric information.
-            We propose an autoencoder-style pose branch to leverage NeRF to aggregate global attributes from samples of light rays on PoseMap and a pose decoder of a series of MLP decoders for the distillation of implicit pose features.
-            This novel combination allows for a more precise and detailed representation of the camera pose.
-            In all, APRNet is optimized, with the supervision of the ground-truth PoseMap \( \mathcal{F}_{pose}(p) \), and by minimizing the discrepancies of image features.
-        </p>
+            <p>
+                Given a set of images and their corresponding camera intrinsic, our method uses a local-to-global strategy to jointly estimate camera poses and the NeRF, as illustrated in <a href="#fig-pipline">figure</a>.
+                To effectively handle large view changes at the start, we introduce an association relationships initialization. 
+                Specifically, we construct a Maximum Spanning Tree (MST) to establish adjacency relationship among all input images, where each node represents an image, and the edge weights are determined by the maximum feature matches.
+                This approach allows us to extract local matching pairs and global tracks from the tree, which proves effective in subsequent optimization.
+            </p>
+            <p>
+                During the local joint optimization phase, we begin with the tree's root node, as it represents the image with the most matching pixels.
+                We then progressively determine the relative pose between adjacent nodes based on the tree's adjacency structure to complete the initialization.
+                These initial estimations serve as the starting poses for NeRF.
+                Throughout training, we enforce photometric and depth consistency within a single view and geometric consistency across multiple views.
+                Importantly, when introducing multi-view geometric consistency constraints, we also introduce a random matching scheme and incorporate non-adjacent random images as supervision.
+                This inclusion allows global information to be integrated into local optimization, reducing accumulated errors in pose estimation and yielding more stable results.
+                In the global joint optimization phase, we further refine the camera poses and NeRF by applying global geometric consistency constraints through the tracking trajectory. This involves supervising all images within the trajectory, similar to bundle adjustment, to enhance camera poses and the NeRF on a global scale.
+            </p>
         </div>
       </div>
     </div>
@@ -222,10 +227,10 @@
 <br>
 
 
-<section class="hero teaser">
-  <div class="container is-max-desktop">
+<!--<section class="hero teaser">
+  <div class="container is-max-desktop">-->
     <!-- Abstract. -->
-    <div class="columns is-centered has-text-centered">
+    <!--<div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Results</h2>
         <img src="static/images/fig2.png" />
@@ -248,17 +253,17 @@
       </div>
     </div>
   </div>
-</section>
+</section>-->
 
 
 <br>
 <br>
 
 
-<section class="hero teaser">
-  <div class="container is-max-desktop">
+<!--<section class="hero teaser">
+  <div class="container is-max-desktop">-->
     <!-- Abstract. -->
-    <div class="columns is-centered has-text-centered">
+    <!--<div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Visualization</h2>
         <img src="static/images/fig4.png" />
@@ -273,7 +278,7 @@
       </div>
     </div>
   </div>
-</section>
+</section>-->
 
 <br>
 <br>
